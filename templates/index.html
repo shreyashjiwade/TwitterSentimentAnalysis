@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tweet Sentiment Checker</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Tweet Sentiment Checker</h2>
+  <form id="form">
+    <input type="text" id="tweetUrl" class="form-control" placeholder="Paste Tweet URL here..." required>
+    <button type="submit" class="btn btn-primary mt-3">Check Sentiment</button>
+  </form>
+  <div id="result" class="mt-4" style="display:none;">
+    <h5>Tweet:</h5>
+    <p id="tweetText"></p>
+    <h5>Sentiment:</h5>
+    <p id="tweetSentiment" class="fw-bold"></p>
+  </div>
+</div>
+<script>
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const url = document.getElementById("tweetUrl").value;
+  const res = await fetch("/analyze", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ url })
+  });
+  const data = await res.json();
+  if (data.error) {
+    alert(data.error);
+    return;
+  }
+  document.getElementById("result").style.display = "block";
+  document.getElementById("tweetText").innerText = data.text;
+  document.getElementById("tweetSentiment").innerText = data.sentiment;
+});
+</script>
+</body>
+</html>
